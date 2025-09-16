@@ -1,0 +1,235 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Protótipo - Acesso NMME via QR Code + SSO</title>
+  <style>
+    body{font-family:Inter,system-ui,Segoe UI,Arial;max-width:980px;margin:24px auto;padding:16px}
+    header{display:flex;align-items:center;gap:12px}
+    h1{margin:0;font-size:20px}
+    .card{border:1px solid #e6e6e6;border-radius:8px;padding:16px;margin-top:12px}
+    label{display:block;margin-top:8px}
+    input[type=text],textarea,select{width:100%;padding:8px;margin-top:6px;border:1px solid #ccc;border-radius:6px}
+    .btn{display:inline-block;padding:10px 14px;border-radius:8px;border:0;cursor:pointer}
+    .btn-primary{background:#2563eb;color:white}
+    .btn-disabled{background:#9aa4b2;color:white;cursor:not-allowed}
+    .small{font-size:13px;color:#555}
+    .flex{display:flex;gap:8px}
+    .notice{background:#fff7cc;padding:10px;border-radius:6px;margin-top:8px}
+  </style>
+</head>
+<body>
+  <header>
+    <svg width="36" height="36" viewBox="0 0 24 24"><rect width="24" height="24" rx="4" fill="#2563eb"/></svg>
+    <div>
+      <h1>Proposta: Acesso NMME via QR Code + SSO — Protótipo</h1>
+      <div class="small">Link de acesso de exemplo (substitua pelo seu domínio/intranet):</div>
+      <div class="small"><strong>https://intranet.exemplo/nmme/access/ACCESS-20250916-ABC123</strong></div>
+    </div>
+  </header>
+
+  <section class="card">
+    <h2>Autenticação SSO (Simulada)</h2>
+    <p class="small">Para acessar o documento, primeiro autentique-se com sua conta corporativa.</p>
+    <button id="ssoLogin" class="btn btn-primary">Entrar com SSO</button>
+    <div id="ssoStatus" class="small" style="margin-top:8px;color:#555">Usuário não autenticado.</div>
+  </section>
+
+  <section class="card" id="nmme-doc" style="display:none">
+    <h2>Documento NMME (Protótipo)</h2>
+    <form id="nmmeForm">
+      <label>Identificador do equipamento / localização
+        <input type="text" id="equipId" placeholder="Ex: TAG-12345" required />
+      </label>
+
+      <label>Responsável pela solicitação (preenchido via SSO)
+        <input type="text" id="requester" readonly required />
+      </label>
+
+      <label>E-mail corporativo (via SSO)
+        <input type="text" id="email" readonly required />
+      </label>
+
+      <label>Data da solicitação
+        <input type="text" id="date" value="2025-09-16" required />
+      </label>
+
+      <label>Descrição do motivo / serviço
+        <textarea id="description" rows="4" placeholder="Descreva o motivo do acesso/serviço" required></textarea>
+      </label>
+
+      <label>Checklist mínimo (marque os itens verificados):</label>
+      <div class="flex">
+        <label><input type="checkbox" class="check" value="doc_anexo"/> Documento anexo</label>
+        <label><input type="checkbox" class="check" value="etiqueta"/> Etiqueta presente</label>
+        <label><input type="checkbox" class="check" value="treinamento"/> Treinamento vigente</label>
+      </div>
+
+      <div class="notice">
+        Dentro deste fluxo você encontrará os documentos obrigatórios: <strong>Conformidade</strong> e <strong>Conscientização</strong>. É necessário marcar que leu e aceitou ambos para prosseguir.
+      </div>
+
+      <div style="margin-top:12px">
+        <button type="button" class="btn btn-primary" id="openCompliance">Abrir Documento de Conformidade</button>
+        <button type="button" class="btn btn-primary" id="openAwareness">Abrir Documento de Conscientização</button>
+      </div>
+
+      <label style="margin-top:12px"><input type="checkbox" id="acceptCompliance" /> Eu li e aceito o Documento de Conformidade (obrigatório)</label>
+      <label><input type="checkbox" id="acceptAwareness" /> Eu li e aceito o Documento de Conscientização (obrigatório)</label>
+
+      <div style="margin-top:12px">
+        <button type="button" id="submitBtn" class="btn btn-disabled" disabled>Solicitar / Liberar Pedido</button>
+        <span id="status" class="small" style="margin-left:12px"></span>
+      </div>
+    </form>
+  </section>
+
+  <section class="card" id="compliance" style="display:none">
+    <h2>Documento de Conformidade — Modelo (v1.0)</h2>
+    <p class="small"><strong>Escopo:</strong> Requisitos mínimos de conformidade para solicitação, liberação, movimentação e execução de serviços envolvendo NMME (materiais e equipamentos).</p>
+
+    <div class="small" style="margin-top:8px">
+      <strong>Versão:</strong> 1.0 &nbsp; <strong>Proprietário:</strong> Gestão de Ativos &nbsp; <strong>Data efetiva:</strong> 2025-09-16 &nbsp; <strong>Revisão:</strong> anual
+    </div>
+
+    <h3>Definições</h3>
+    <ol>
+      <li><strong>Solicitante</strong>: colaborador que requisita a movimentação/uso do NMME.</li>
+      <li><strong>Executor</strong>: pessoa qualificada que realizará a atividade.</li>
+      <li><strong>NMME</strong>: materiais e equipamentos sujeitos a controle e rastreabilidade.</li>
+    </ol>
+
+    <h3>Termos e obrigações</h3>
+    <ol>
+      <li>O solicitante declara que as informações prestadas neste formulário são verdadeiras e completas.</li>
+      <li>É obrigatório anexar documentos de habilitação, certificados e fichas técnicas quando aplicável. Sem os anexos exigidos, o pedido permanecerá bloqueado.</li>
+      <li>Qualquer não conformidade detectada durante a execução deve ser registrada no sistema de gestão (NC/incidente) e comunicada ao responsável em até 24 horas.</li>
+      <li>O não preenchimento dos campos obrigatórios ou a recusa em aceitar este documento impede a liberação do pedido.</li>
+      <li>O aceite deste documento corresponde à assinatura eletrônica baseada na autenticação SSO; dados do usuário (nome, matrícula/cargo, e-mail) e timestamp serão gravados como registro de aceite.</li>
+      <li>Registros relacionados a este documento serão mantidos conforme política interna de retenção (ex.: mínimo 5 anos) e estarão disponíveis para auditoria.</li>
+    </ol>
+
+    <h3>Fluxo de evidência</h3>
+    <ul>
+      <li>Anexar fotos do equipamento e etiquetas; documentos digitalizados de habilitação; comprovante de treinamento quando aplicável.</li>
+      <li>Logs de aceite (usuário, cargo, e-mail, timestamp) serão vinculados ao pedido para rastreabilidade.</li>
+      <li>Não conformidades com impacto operacional devem conter plano de ação e responsável designado.</li>
+    </ul>
+
+    <div style="margin-top:12px">
+      <button class="btn" id="closeCompliance">Fechar</button>
+    </div>
+  </section>
+
+  <section class="card" id="awareness" style="display:none">
+    <h2>Documento de Conscientização — Modelo (v1.0)</h2>
+    <p class="small"><strong>Objetivo:</strong> Informar riscos, medidas preventivas e responsabilidades para operação e manuseio de NMME, garantindo que o colaborador compreenda e cumpra as diretrizes de segurança.</p>
+
+    <div class="small" style="margin-top:8px">
+      <strong>Versão:</strong> 1.0 &nbsp; <strong>Proprietário:</strong> Segurança do Trabalho &nbsp; <strong>Data efetiva:</strong> 2025-09-16
+    </div>
+
+    <h3>Pontos principais</h3>
+    <ol>
+      <li><strong>EPI:</strong> Uso, conservação e inspeção dos equipamentos de proteção individual conforme a atividade. Sempre verificar integridade antes do uso.</li>
+      <li><strong>Isolamento e bloqueio (LOTO):</strong> Seguir procedimentos de bloqueio e verificação antes de intervenções que envolvam energia, pressão ou risco mecânico.</li>
+      <li><strong>Comunicação:</strong> Reportar imediatamente qualquer condição insegura ao supervisor e registrar no sistema de gestão.</li>
+      <li><strong>Treinamento:</strong> Não executar tarefas sem treinamento e habilitação vigentes e comprovados.</li>
+      <li><strong>Responsabilidade:</strong> Ações negligentes ou fora do procedimento podem gerar responsabilização conforme políticas internas e cobertura de seguro.</li>
+      <li><strong>Emergência:</strong> Em caso de acidente ou incidente, seguir o plano de emergência local e acionar os contatos de emergência indicados.</li>
+    </ol>
+
+    <h3>Confirmação de entendimento</h3>
+    <p class="small">Ao aceitar este documento, o colaborador confirma que leu, entendeu os riscos e medidas preventivas e se compromete a cumpri-los. O aceite será registrado eletronicamente (SSO + timestamp) e vinculado ao pedido para auditoria.</p>
+
+    <div style="margin-top:12px">
+      <button class="btn" id="closeAwareness">Fechar</button>
+    </div>
+  </section>
+
+  <script>
+    const submitBtn = document.getElementById('submitBtn');
+    const acceptCompliance = document.getElementById('acceptCompliance');
+    const acceptAwareness = document.getElementById('acceptAwareness');
+    const status = document.getElementById('status');
+
+    // Simulação de autenticação SSO
+    document.getElementById('ssoLogin').addEventListener('click', ()=>{
+      // Aqui seria a chamada real ao IdP (Azure AD, Okta, Google, etc.)
+      // No protótipo, simulamos um login bem sucedido.
+      const fakeUser = {
+        name: 'João da Silva',
+        email: 'joao.silva@empresa.com'
+      };
+      document.getElementById('requester').value = fakeUser.name;
+      document.getElementById('email').value = fakeUser.email;
+
+      document.getElementById('nmme-doc').style.display = 'block';
+      document.getElementById('ssoStatus').textContent = 'Autenticado como ' + fakeUser.name + ' (' + fakeUser.email + ')';
+    });
+
+    function validateRequiredFields(){
+      const equipId = document.getElementById('equipId').value.trim();
+      const requester = document.getElementById('requester').value.trim();
+      const email = document.getElementById('email').value.trim();
+      const date = document.getElementById('date').value.trim();
+      const description = document.getElementById('description').value.trim();
+      const checks = Array.from(document.querySelectorAll('.check')).some(c=>c.checked);
+      const accepted = acceptCompliance.checked && acceptAwareness.checked;
+      return equipId && requester && email && date && description && checks && accepted;
+    }
+
+    function updateSubmitState(){
+      if(validateRequiredFields()){
+        submitBtn.disabled = false;
+        submitBtn.className = 'btn btn-primary';
+      } else {
+        submitBtn.disabled = true;
+        submitBtn.className = 'btn btn-disabled';
+      }
+    }
+
+    document.querySelectorAll('input,textarea').forEach(el=>el.addEventListener('input',updateSubmitState));
+    document.querySelectorAll('.check').forEach(el=>el.addEventListener('change',updateSubmitState));
+    acceptCompliance.addEventListener('change',updateSubmitState);
+    acceptAwareness.addEventListener('change',updateSubmitState);
+
+    document.getElementById('openCompliance').addEventListener('click',()=>{
+      document.getElementById('compliance').style.display='block';
+      window.scrollTo(0,document.getElementById('compliance').offsetTop-20);
+    });
+    document.getElementById('openAwareness').addEventListener('click',()=>{
+      document.getElementById('awareness').style.display='block';
+      window.scrollTo(0,document.getElementById('awareness').offsetTop-20);
+    });
+    document.getElementById('closeCompliance').addEventListener('click',()=>{document.getElementById('compliance').style.display='none';});
+    document.getElementById('closeAwareness').addEventListener('click',()=>{document.getElementById('awareness').style.display='none';});
+
+    submitBtn.addEventListener('click',()=>{
+      if(!validateRequiredFields()){
+        status.textContent = 'Preencha todos os campos obrigatórios e aceite os documentos.';
+        return;
+      }
+      const payload = {
+        equipId: document.getElementById('equipId').value.trim(),
+        requester: document.getElementById('requester').value.trim(),
+        email: document.getElementById('email').value.trim(),
+        date: document.getElementById('date').value.trim(),
+        description: document.getElementById('description').value.trim(),
+        checklist: Array.from(document.querySelectorAll('.check')).filter(c=>c.checked).map(c=>c.value),
+        acceptedCompliance: acceptCompliance.checked,
+        acceptedAwareness: acceptAwareness.checked,
+        timestamp: new Date().toISOString()
+      };
+
+      status.textContent = 'Solicitação registrada com sucesso — pedido bloqueado até análise: ID PROT-' + Math.floor(Math.random()*90000+10000);
+      submitBtn.disabled = true;
+      submitBtn.className = 'btn btn-disabled';
+      console.log('Payload enviado:', payload);
+    });
+  </script>
+
+  <footer style="margin-top:18px;font-size:12px;color:#666">Protótipo criado para demonstrar fluxo de acesso via link/QR, autenticação SSO simulada, documentos de Conformidade e Conscientização, e bloqueio de liberação de pedido quando requisitos não satisfeitos.</footer>
+</body>
+</html>
