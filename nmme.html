@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Documento NMME - Acesso Seguro</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 30px; background: #f9f9f9; }
+    h1 { color: #2c3e50; }
+    .card { background: white; padding: 20px; margin: 15px 0; border-radius: 10px; box-shadow: 0 2px 5px rgba(0,0,0,0.1);}
+    label { display: block; margin-top: 10px; }
+    input, textarea, select { width: 100%; padding: 8px; margin-top: 5px; }
+    button { margin-top: 20px; padding: 12px; background: #2c3e50; color: white; border: none; border-radius: 5px; cursor: pointer; }
+    button:disabled { background: #ccc; cursor: not-allowed; }
+  </style>
+  <script>
+    function validar() {
+      const nome = document.getElementById("nome").value.trim();
+      const matricula = document.getElementById("matricula").value.trim();
+      const aceite1 = document.getElementById("conformidade").checked;
+      const aceite2 = document.getElementById("conscientizacao").checked;
+      document.getElementById("btnEnviar").disabled = !(nome && matricula && aceite1 && aceite2);
+    }
+  </script>
+</head>
+<body>
+  <h1>📄 Documento NMME</h1>
+  <div class="card">
+    <p>Bem-vindo ao sistema de acesso ao Documento NMME. Para liberar o pedido, é necessário preencher os dados e aceitar os termos de conformidade e conscientização.</p>
+  </div>
+
+  <div class="card">
+    <h2>Formulário de Acesso</h2>
+    <form>
+      <label>Nome Completo:
+        <input type="text" id="nome" oninput="validar()">
+      </label>
+      <label>Matrícula/ID:
+        <input type="text" id="matricula" oninput="validar()">
+      </label>
+      
+      <h3>📑 Documento de Conformidade</h3>
+      <textarea readonly>
+Este documento certifica que o colaborador compreende e está de acordo com os requisitos normativos do NMME. 
+O não preenchimento invalida a liberação do pedido.
+      </textarea>
+      <label>
+        <input type="checkbox" id="conformidade" onclick="validar()"> Li e estou de acordo.
+      </label>
+
+      <h3>📘 Documento de Conscientização</h3>
+      <textarea readonly>
+Este documento confirma que o colaborador recebeu e compreendeu as instruções de segurança, responsabilidade e 
+boas práticas relacionadas ao NMME.
+      </textarea>
+      <label>
+        <input type="checkbox" id="conscientizacao" onclick="validar()"> Li e estou de acordo.
+      </label>
+
+      <button id="btnEnviar" disabled>Enviar e Liberar Pedido</button>
+    </form>
+  </div>
+</body>
+</html>
